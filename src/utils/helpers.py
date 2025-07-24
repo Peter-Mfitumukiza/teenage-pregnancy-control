@@ -6,7 +6,7 @@ Contains helper functions for UI formatting and common operations.
 import os
 import platform
 from colorama import Fore, Style
-
+from datetime import datetime
 
 def clear_screen():
     """Clear the terminal screen."""
@@ -216,3 +216,80 @@ def sanitize_input(user_input, max_length=1000):
         sanitized = sanitized[:max_length]
     
     return sanitized
+def print_colored(text, color="white", bold=False, center=False, end="\n"):
+    """Print colored text to terminal"""
+    colors = {
+        'black': Fore.BLACK,
+        'red': Fore.RED,
+        'green': Fore.GREEN,
+        'yellow': Fore.YELLOW,
+        'blue': Fore.BLUE,
+        'magenta': Fore.MAGENTA,
+        'cyan': Fore.CYAN,
+        'white': Fore.WHITE,
+        'reset': Style.RESET_ALL
+    }
+
+    color_code = colors.get(color.lower(), colors['white'])
+    bold_code = Style.BRIGHT if bold else ''
+    reset_code = colors['reset']
+
+    formatted_text = f"{bold_code}{color_code}{text}{reset_code}"
+
+    if center:
+        # Get terminal width and center the text
+        try:
+            import shutil
+            terminal_width = shutil.get_terminal_size().columns
+            padding = (terminal_width - len(text)) // 2
+            formatted_text = " " * padding + formatted_text
+        except:
+            pass  # If terminal size can't be determined, just print normally
+
+    print(formatted_text, end=end)
+
+def format_date(date_obj):
+    """Format datetime object to readable string"""
+    if isinstance(date_obj, str):
+        try:
+            date_obj = datetime.strptime(date_obj, '%Y-%m-%d %H:%M:%S')
+        except:
+            return str(date_obj)
+
+    now = datetime.now()
+    diff = now - date_obj
+
+    if diff.days > 30:
+        return date_obj.strftime('%b %d, %Y')
+    elif diff.days > 0:
+        return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+    elif diff.seconds > 3600:
+        hours = diff.seconds // 3600
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    elif diff.seconds > 60:
+        minutes = diff.seconds // 60
+        return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+    else:
+        return "Just now"
+
+def validate_question_text(text):
+    """Validate question text format"""
+    if not text or len(text.strip()) < 10:
+        return False, "Question must be at least 10 characters long"
+
+    if len(text) > 1000:
+        return False, "Question must be less than 1000 characters"
+
+    # Check for inappropriate content (basic check)
+    inappropriate_words = ['spam', 'test123', 'asdf']  # Add more as needed
+    text_lower = text.lower()
+
+    for word in inappropriate_words:
+        if word in text_lower:
+            return False, "Please ask a meaningful question"
+
+    return True, "Valid question"
+
+def format_category_display(category_name):
+    """Format category name for display"""
+    return category_name.replace('_', ' ').title()
