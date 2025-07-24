@@ -5,7 +5,7 @@ Contains functions to validate user inputs and data.
 
 import re
 from typing import Tuple, Union
-
+import html
 
 def validate_username_input(username: str) -> Tuple[Union[str, None], Union[str, None]]:
     """
@@ -665,3 +665,49 @@ def validate_menu_choice(choice: str, max_option: int) -> Tuple[Union[int, None]
             
     except ValueError:
         return None, "Please enter a valid number"
+def validate_input(text, min_length=1, max_length=1000):
+    """Validate user input text"""
+    if not text or not isinstance(text, str):
+        return False
+    
+    text = text.strip()
+    
+    if len(text) < min_length or len(text) > max_length:
+        return False
+    
+    # Check for potentially harmful content
+    dangerous_patterns = [
+        r'<script',
+        r'javascript:',
+        r'<iframe',
+        r'<object',
+        r'<embed'
+    ]
+    
+    text_lower = text.lower()
+    for pattern in dangerous_patterns:
+        if re.search(pattern, text_lower):
+            return False
+    
+    return True
+
+def validate_category(category, valid_categories):
+    """Validate if category is in allowed list"""
+    if not category or category not in valid_categories:
+        return False
+    return True
+
+def is_safe_content(text):
+    """Check if content is appropriate for teenagers"""
+    # Add your content filtering logic here
+    inappropriate_keywords = [
+        'explicit_content',  # Add actual keywords based on your policy
+        'inappropriate_term'
+    ]
+    
+    text_lower = text.lower()
+    for keyword in inappropriate_keywords:
+        if keyword in text_lower:
+            return False
+    
+    return True

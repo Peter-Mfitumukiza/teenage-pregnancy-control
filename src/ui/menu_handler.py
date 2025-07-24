@@ -5,7 +5,7 @@ from src.utils.helpers import (
 )
 from src.utils.validators import validate_menu_choice
 from colorama import Fore, Style
-
+from ui.qna_ui import QnAUI
 
 class MenuHandler:
     """Handles main menu navigation and user interactions."""
@@ -241,29 +241,33 @@ class MenuHandler:
         
         input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         return 'continue'
-    
     def _show_anonymous_qa(self):
-        """Show anonymous Q&A section."""
-        clear_screen()
-        print_header("💬 ANONYMOUS Q&A")
+        """Show anonymous Q&A section - FULLY FUNCTIONAL"""
+        try:
+            if not self.is_authenticated:
+                clear_screen()
+                print_header("💬 ANONYMOUS Q&A")
+                print(f"{Fore.RED}❌ Please log in to access Q&A system{Style.RESET_ALL}")
+                print("Guest users can only view FAQ section.")
+                input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+                return 'continue'
+            
+            # Get the current user's username
+            user_stats = self.auth_service.get_user_stats()
+            current_username = user_stats['username']
+            
+            # Initialize and show the Q&A interface
+            qna_ui = QnAUI(current_username)
+            qna_ui.show_main_menu()
+            
+        except Exception as e:
+            clear_screen()
+            print_header("💬 ANONYMOUS Q&A - ERROR")
+            print(f"{Fore.RED}❌ Error accessing Q&A system: {e}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please try again or contact support if this persists.{Style.RESET_ALL}")
+            input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         
-        print_info_box("🔒 ANONYMOUS & SAFE", [
-            "Ask questions without revealing identity",
-            "Get answers from community and experts",
-            "All conversations are confidential"
-        ], Fore.CYAN)
-        
-        # TODO: Implement Q&A system
-        print(f"\n{Fore.YELLOW}🚧 Q&A system coming soon!{Style.RESET_ALL}")
-        print("Features will include:")
-        print("• Ask anonymous questions")
-        print("• Browse frequently asked questions")
-        print("• Get expert and peer responses")
-        print("• Rate helpful answers")
-        
-        input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         return 'continue'
-    
     def _show_knowledge_quiz(self):
         """Show knowledge quiz section."""
         clear_screen()
