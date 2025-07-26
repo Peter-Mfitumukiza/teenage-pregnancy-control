@@ -220,8 +220,7 @@ class MenuHandler:
         print("• Community Health Centers")
         
         run_counseling_support()
-        # TODO: Implement support resources database
-        print(f"\n{Fore.YELLOW}🚧 Detailed support directory coming soon!{Style.RESET_ALL}")
+
         
         input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         return 'continue'
