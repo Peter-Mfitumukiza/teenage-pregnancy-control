@@ -5,8 +5,8 @@ from src.utils.helpers import (
 )
 from src.utils.validators import validate_menu_choice
 from colorama import Fore, Style
-from ui.qna_ui import QnAUI
-from Counseling_support import run_counseling_support
+from src.ui.qna_ui import QnAUI
+from src.services.counseling_support import run_counseling_support
 
 class MenuHandler:
     """Handles main menu navigation and user interactions."""
