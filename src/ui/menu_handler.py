@@ -5,7 +5,8 @@ from src.utils.helpers import (
 )
 from src.utils.validators import validate_menu_choice
 from colorama import Fore, Style
-from ui.qna_ui import QnAUI
+from src.ui.qna_ui import QnAUI
+from src.services.counseling_support import run_counseling_support
 
 class MenuHandler:
     """Handles main menu navigation and user interactions."""
@@ -218,8 +219,8 @@ class MenuHandler:
         print("• School Counselors")
         print("• Community Health Centers")
         
-        # TODO: Implement support resources database
-        print(f"\n{Fore.YELLOW}🚧 Detailed support directory coming soon!{Style.RESET_ALL}")
+        run_counseling_support()
+
         
         input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         return 'continue'
