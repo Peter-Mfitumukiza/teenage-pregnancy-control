@@ -1,4 +1,4 @@
--- Users table (simple username-based)
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(20) PRIMARY KEY,
     age INT NOT NULL CHECK (age BETWEEN 13 AND 19),
@@ -103,7 +103,20 @@ CREATE TABLE IF NOT EXISTS system_stats (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create indexes for better performance
+CREATE TABLE counseling_sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(20) NOT NULL,
+    client_name VARCHAR(255) NOT NULL,
+    topic TEXT NOT NULL,
+    preferred_date DATE NOT NULL,
+    status ENUM('scheduled', 'completed', 'cancelled', 'rescheduled') DEFAULT 'scheduled',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+);
+
+-- indexes for better performance
 CREATE INDEX idx_users_age ON users(age);
 CREATE INDEX idx_user_progress_user ON user_progress(username);
 CREATE INDEX idx_support_resources_type ON support_resources(type);

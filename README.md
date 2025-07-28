@@ -1,10 +1,11 @@
 # Teenage Pregnancy Awareness and Support System
 
-A comprehensive Python-based application designed to provide education, support, and resources for teenagers regarding reproductive health and pregnancy awareness. This system prioritizes user privacy and anonymity while delivering age-appropriate, medically accurate information.
+A Python-based application designed to provide education, support, and resources for teenagers regarding reproductive health and pregnancy awareness. This system prioritizes user privacy and anonymity while delivering age-appropriate, medically accurate information.
 
 ## 🌟 Features
 
 ### Core Functionality
+
 - **Anonymous User System**: Complete anonymity with secure user IDs
 - **Educational Resources**: Interactive lessons on reproductive health, contraception, and pregnancy risks
 - **Support Network**: Access to counseling resources and support services
@@ -14,6 +15,7 @@ A comprehensive Python-based application designed to provide education, support,
 - **Progress Tracking**: Monitor learning journey and achievements
 
 ### Security & Privacy
+
 - 🔒 Complete user anonymity
 - 🛡️ Secure session management
 - 📊 Encrypted sensitive data storage

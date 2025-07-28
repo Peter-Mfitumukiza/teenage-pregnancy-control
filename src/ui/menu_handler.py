@@ -7,6 +7,8 @@ from src.utils.validators import validate_menu_choice
 from colorama import Fore, Style
 from src.ui.qna_ui import QnAUI
 from src.services.counseling_support import run_counseling_support
+from src.services.educational_resources import run_educational_resources
+from src.services.local_services import run_local_services
 
 class MenuHandler:
     """Handles main menu navigation and user interactions."""
@@ -39,14 +41,13 @@ class MenuHandler:
             print_menu_option(3, "Find Local Services", "📍")
             print_menu_option(4, "Anonymous Q&A", "💬")
             print_menu_option(5, "Take Knowledge Quiz", "🧠")
-            print_menu_option(6, "My Profile & Progress", "👤")
-            print_menu_option(7, "Emergency Resources", "🆘")
-            print_menu_option(8, "Logout", "🚪")
+            # print_menu_option(6, "My Profile & Progress", "👤")
+            print_menu_option(6, "Logout", "🚪")
             
             print_separator()
             
-            choice_input = input(f"\n{Fore.YELLOW}Please select an option (1-8): {Style.RESET_ALL}").strip()
-            choice, error = validate_menu_choice(choice_input, 8)
+            choice_input = input(f"\n{Fore.YELLOW}Please select an option (1-6): {Style.RESET_ALL}").strip()
+            choice, error = validate_menu_choice(choice_input, 6)
             
             if error:
                 print(f"{Fore.RED}❌ {error}{Style.RESET_ALL}")
@@ -82,14 +83,14 @@ class MenuHandler:
             print_menu_option(2, "Browse Support Resources", "🤝")
             print_menu_option(3, "Find Local Services", "📍")
             print_menu_option(4, "View FAQ Section", "❓")
-            print_menu_option(5, "Emergency Resources", "🆘")
-            print_menu_option(6, "Create Account", "✨")
-            print_menu_option(7, "Exit System", "🚪")
+            # print_menu_option(5, "Emergency Resources", "🆘")
+            print_menu_option(5, "Create Account", "✨")
+            print_menu_option(6, "Exit System", "🚪")
             
             print_separator()
             
-            choice_input = input(f"\n{Fore.YELLOW}Please select an option (1-7): {Style.RESET_ALL}").strip()
-            choice, error = validate_menu_choice(choice_input, 7)
+            choice_input = input(f"\n{Fore.YELLOW}Please select an option (1-6): {Style.RESET_ALL}").strip()
+            choice, error = validate_menu_choice(choice_input, 6)
             
             if error:
                 print(f"{Fore.RED}❌ {error}{Style.RESET_ALL}")
@@ -142,11 +143,11 @@ class MenuHandler:
         elif choice == 5:
             return self._show_knowledge_quiz()
         elif choice == 6:
-            return self._show_user_profile()
-        elif choice == 7:
-            return self._show_emergency_resources()
-        elif choice == 8:
             return self._handle_logout()
+        # elif choice == 7:
+        #     return self._show_emergency_resources()
+        # elif choice == 8: 
+        #     return self._handle_logout()
         
         return 'continue'
     
@@ -160,88 +161,125 @@ class MenuHandler:
             return self._show_local_services(guest_mode=True)
         elif choice == 4:
             return self._show_faq_section()
+        # elif choice == 5:
+        #     return self._show_emergency_resources()
         elif choice == 5:
-            return self._show_emergency_resources()
-        elif choice == 6:
             return self._create_account_from_guest()
-        elif choice == 7:
+        elif choice == 6:
             return 'exit'
         
         return 'continue'
     
     def _show_educational_resources(self, guest_mode=False):
-        """Show educational resources section."""
-        clear_screen()
-        print_header("📖 EDUCATIONAL RESOURCES")
+        """Show educational resources section - FULLY FUNCTIONAL"""
+        try:
+            # Get current username if authenticated
+            current_username = None
+            if self.is_authenticated and self.auth_service:
+                user_stats = self.auth_service.get_user_stats()
+                current_username = user_stats['username']
+            
+            # Run the educational resources system
+            run_educational_resources(current_username, guest_mode)
+            
+        except Exception as e:
+            clear_screen()
+            print_header("📖 EDUCATIONAL RESOURCES - ERROR")
+            print(f"{Fore.RED}❌ Error accessing educational resources: {e}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please try again or contact support if this persists.{Style.RESET_ALL}")
+            input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         
-        if guest_mode:
-            print_info_box("📋 GUEST ACCESS", [
-                "Viewing educational content as guest",
-                "Progress will not be saved",
-                "Create an account to track your learning!"
-            ], Fore.YELLOW)
-        
-        print(f"\n{Fore.CYAN}📚 SHOW AVAILABLE TOPICS:{Style.RESET_ALL}")
-        print("1. 🧬 Reproductive Health Basics")
-        print("2. ⚠️  Understanding Pregnancy Risks")
-        print("3. 🛡️  Can fetch other topics from the database")
-        # print("4. 🌸 Understanding Puberty")
-        # print("5. 🏥 Sexual Health and STDs")
-        # print("6. 💭 Emotional and Mental Health")
-        # print("7. 🔙 Return to Main Menu")
-        
-        # TODO: Implement educational content display
-        print(f"\n{Fore.YELLOW}🚧 Educational modules coming soon!{Style.RESET_ALL}")
-        print("This feature will provide comprehensive, age-appropriate educational content.")
-        
-        input(f"\n{Fore.CYAN}Press Enter to return to main menu...{Style.RESET_ALL}")
         return 'continue'
-    
-    def _show_support_counseling(self, guest_mode=False):
-        """Show support and counseling section."""
-        clear_screen()
-        print_header("🤝 SUPPORT & COUNSELING")
-        
-        print_info_box("💜 YOU ARE NOT ALONE", [
-            "Support is available 24/7",
-            "All services are confidential",
-            "Professional help is just a call away"
-        ], Fore.MAGENTA)
-        
-        print(f"\n{Fore.CYAN}🆘 IMMEDIATE SUPPORT:{Style.RESET_ALL}")
-        print("• National Crisis Line: 988")
-        print("• Teen Pregnancy Hotline: 1-800-672-2296")
-        print("• Crisis Text Line: Text HOME to 741741")
-        
-        print(f"\n{Fore.GREEN}🏥 PROFESSIONAL SERVICES:{Style.RESET_ALL}")
-        print("• Planned Parenthood: 1-800-230-PLAN")
-        print("• Local Health Departments")
-        print("• School Counselors")
-        print("• Community Health Centers")
-        
-        run_counseling_support()
 
+    def _show_support_counseling(self, guest_mode=False):
+        """Show support and counseling section - FULLY FUNCTIONAL"""
+        if guest_mode:
+            clear_screen()
+            print_header("🤝 SUPPORT & COUNSELING")
+            
+            print_info_box("💜 YOU ARE NOT ALONE", [
+                "Support is available 24/7",
+                "All services are confidential",
+                "Professional help is just a call away"
+            ], Fore.MAGENTA)
+            
+            print(f"\n{Fore.CYAN}🆘 IMMEDIATE SUPPORT:{Style.RESET_ALL}")
+            print("• National Crisis Line: 988")
+            print("• Teen Pregnancy Hotline: 1-800-672-2296")
+            print("• Crisis Text Line: Text HOME to 741741")
+            
+            print(f"\n{Fore.GREEN}🏥 PROFESSIONAL SERVICES:{Style.RESET_ALL}")
+            print("• Planned Parenthood: 1-800-230-PLAN")
+            print("• Local Health Departments")
+            print("• School Counselors")
+            print("• Community Health Centers")
+            
+            print(f"\n{Fore.YELLOW}📋 Guest Limitation:{Style.RESET_ALL}")
+            print("• Session booking requires an account")
+            print("• Create an account to schedule counseling sessions")
+            
+            input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+            return 'continue'
         
-        input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+        try:
+            # Get current username if authenticated
+            current_username = None
+            if self.is_authenticated and self.auth_service:
+                user_stats = self.auth_service.get_user_stats()
+                current_username = user_stats['username']
+            
+            if not current_username:
+                clear_screen()
+                print_header("🤝 SUPPORT & COUNSELING")
+                print(f"{Fore.RED}❌ Please log in to access counseling services{Style.RESET_ALL}")
+                print("Authentication is required to book and manage counseling sessions.")
+                input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+                return 'continue'
+            
+            # Run the counseling support system
+            run_counseling_support(current_username)
+            
+        except Exception as e:
+            clear_screen()
+            print_header("🤝 SUPPORT & COUNSELING - ERROR")
+            print(f"{Fore.RED}❌ Error accessing counseling support: {e}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please try again or contact support if this persists.{Style.RESET_ALL}")
+            input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+        
         return 'continue'
     
+    # def _show_local_services(self, guest_mode=False):
+    #     """Show local services finder."""
+    #     clear_screen()
+    #     print_header("📍 FIND LOCAL SERVICES")
+        
+    #     print(f"\n{Fore.CYAN}Find nearby resources and support services{Style.RESET_ALL}")
+        
+    #     # TODO: Implement location-based service finder
+    #     print(f"\n{Fore.YELLOW}🚧 Service locator coming soon!{Style.RESET_ALL}")
+    #     print("This feature will help you find:")
+    #     print("• Local clinics and health centers")
+    #     print("• Counseling services")
+    #     print("• Support groups")
+    #     print("• NGOs and community organizations")
+        
+    #     input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
+    #     return 'continue'
+
     def _show_local_services(self, guest_mode=False):
-        """Show local services finder."""
-        clear_screen()
-        print_header("📍 FIND LOCAL SERVICES")
+        """Show local services finder """
+        try:
+            run_local_services(guest_mode)
+            
+        except Exception as e:
+            clear_screen()
+            print_header("📍 FIND LOCAL SERVICES - ERROR")
+            print(f"{Fore.RED}❌ Error accessing local services: {e}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please try again or contact support if this persists.{Style.RESET_ALL}")
+            input(f"{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         
-        print(f"\n{Fore.CYAN}Find nearby resources and support services{Style.RESET_ALL}")
-        
-        # TODO: Implement location-based service finder
-        print(f"\n{Fore.YELLOW}🚧 Service locator coming soon!{Style.RESET_ALL}")
-        print("This feature will help you find:")
-        print("• Local clinics and health centers")
-        print("• Counseling services")
-        print("• Support groups")
-        print("• NGOs and community organizations")
-        
-        input(f"\n{Fore.CYAN}Press Enter to continue...{Style.RESET_ALL}")
         return 'continue'
+
     def _show_anonymous_qa(self):
         """Show anonymous Q&A section - FULLY FUNCTIONAL"""
         try:
